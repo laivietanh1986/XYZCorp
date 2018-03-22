@@ -16,11 +16,18 @@ namespace XYZCorp.Tests.Controllers
     [TestClass]
     public class UserServicesTest
     {
+        private UserServices userServices;
+        [TestInitialize]
+        public void Initial()
+        {
+
+            userServices = new UserServices();
+        }
         [TestMethod]
         public void GetUser()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
 
             // Act
              var result  = userServices.GetUserList();
@@ -33,8 +40,7 @@ namespace XYZCorp.Tests.Controllers
         [TestMethod]
         public void GetUserByIdFail()
         {
-            // Arrange
-            UserServices userServices = new UserServices();
+            // Arrange         
             var id = 1000;
             // Act
             var result = userServices.GetUser(1000);
@@ -48,7 +54,7 @@ namespace XYZCorp.Tests.Controllers
         public void GetUserByIdSuccess()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
             var user = UserData.GetUserData().First();
             // Act
             var result = userServices.GetUser(user.Id);
@@ -63,7 +69,7 @@ namespace XYZCorp.Tests.Controllers
         public void AddUserNameEmpty()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
             var user = new User() { Name = string.Empty, Points = 10 };
             // Act
             var result = userServices.InsertUser(user);
@@ -78,7 +84,7 @@ namespace XYZCorp.Tests.Controllers
         public void AddUserExist()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
             var existName = UserData.GetUserData().First().Name;
             var user = new User() { Name = existName, Points = 10 };
             // Act
@@ -93,7 +99,7 @@ namespace XYZCorp.Tests.Controllers
         public void AddUserNotExist()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
             var guild = Guid.NewGuid();
             var user = new User() { Name = "Viet Anh " + guild.ToString(), Points = 10 };
             // Act
@@ -104,12 +110,27 @@ namespace XYZCorp.Tests.Controllers
             Assert.AreEqual(result.Result, ResultValue.Success);
             Assert.AreEqual((int)result.Data,UserData.GetUserData().Max(x=>x.Id));
         }
+        [TestMethod]
+        public void AddUserPointSmallerThanZero()
+        {
+            // Arrange
+
+            var guild = Guid.NewGuid();
+            var user = new User() { Name = "Viet Anh " + guild.ToString(), Points = -10 };
+            // Act
+            var result = userServices.InsertUser(user);
+
+            // Assert
+
+            Assert.AreEqual(result.Result, ResultValue.Fail);
+            Assert.AreEqual(result.Message, Message.PointMustGreaterThanZero);
+        }
 
         [TestMethod]
         public void SetPointSuccess()
         {
             // Arrange
-            UserServices userServices = new UserServices();            
+            
             var user = new UserPoint() { Id =1,Points = 10 };
             // Act
             var result = userServices.SetPoint(user);
@@ -123,7 +144,7 @@ namespace XYZCorp.Tests.Controllers
         public void SetPointFail()
         {
             // Arrange
-            UserServices userServices = new UserServices();
+            
             var idNotExist = UserData.GetUserData().Max(x => x.Id) + 10;
             var user = new UserPoint() { Id = idNotExist, Points = 10 };
             // Act
@@ -133,8 +154,20 @@ namespace XYZCorp.Tests.Controllers
 
             Assert.AreEqual(result.Result, ResultValue.Fail);
         }
+        [TestMethod]
+        public void SetPointSmallerThanZero()
+        {
+            // Arrange
 
+            var user = new UserPoint() { Id = 1, Points = -10 };
+            // Act
+            var result = userServices.SetPoint(user);
 
+            // Assert
+
+            Assert.AreEqual(result.Result, ResultValue.Fail);
+            Assert.AreEqual(result.Message, Message.PointMustGreaterThanZero);
+        }
 
     }
 }

@@ -56,10 +56,14 @@ namespace XYZCorp.Services
             if (string.IsNullOrEmpty(user.Name) )
             {
                 return new CommonResult() { Result = ResultValue.Fail,Message = Message.NameIsEmpty };
-            }
+            }            
             if (userData.Any(u => u.Name == user.Name))
             {
                 return new CommonResult() { Result = ResultValue.Fail,Message = Message.NameAlreadyExist };
+            }
+            if (user.Points <0)
+            {
+                return new CommonResult() { Result = ResultValue.Fail, Message = Message.PointMustGreaterThanZero };
             }
             var newUser = new UserEntity()
             {
@@ -77,6 +81,10 @@ namespace XYZCorp.Services
             if (updateUser == null)
             {                
                 return new CommonResult() { Result = ResultValue.Fail };
+            }
+            if (user.Points < 0)
+            {
+                return new CommonResult() { Result = ResultValue.Fail, Message = Message.PointMustGreaterThanZero };
             }
             updateUser.Points = user.Points;            
             return new CommonResult() { Result = ResultValue.Success};
