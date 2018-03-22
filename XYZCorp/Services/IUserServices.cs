@@ -8,7 +8,7 @@ using XYZCorp.Utility;
 
 namespace XYZCorp.Services
 {
-    interface IUserServices
+    public interface IUserServices
     {        
         IEnumerable<User> GetUserList();
         CommonResult GetUser(int id);

@@ -14,10 +14,10 @@ namespace XYZCorp.Controllers
     public class UsersController : ApiController
     {
         private readonly IUserServices userServices;
-        public UsersController()
+        public UsersController(IUserServices _userServices)
         {
             //todo: will upgrade to user Dependency injection here  
-            userServices = new UserServices();
+            userServices = _userServices;
         }
 
         /// <summary>
